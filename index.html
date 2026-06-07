@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Mimir's Tales (Homework)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        ws: {
+                            bg: '#020617',
+                            iceBlue: '#0ea5e9',
+                            gold: '#fbbf24',
+                            bloodRed: '#dc2626'
+                        }
+                    },
+                    fontFamily: {
+                        epic: ['Cinzel', 'serif'],
+                        base: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #020617;
+            color: #f8fafc;
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(circle at top, rgba(14, 165, 233, 0.1) 0%, transparent 50%),
+                url("https://www.transparenttextures.com/patterns/black-scales.png");
+        }
+
+        #mobile-container {
+            width: 100%; max-width: 400px; height: 100vh; max-height: 850px;
+            background-color: #020617; position: relative; overflow: hidden;
+            display: flex; flex-direction: column;
+            box-shadow: 0 0 50px rgba(14, 165, 233, 0.2);
+            border: 2px solid #0ea5e9; border-radius: 4px;
+        }
+
+        @media (max-width: 400px) { #mobile-container { border: none; box-shadow: none; height: 100vh; max-height: none; border-radius: 0; } }
+
+        .btn-option {
+            background: linear-gradient(to right, rgba(15, 23, 42, 0.9), rgba(2, 6, 23, 0.9)); 
+            border: 1px solid #0284c7; color: #f8fafc; font-family: 'Cinzel', serif;
+            font-weight: 700; text-transform: uppercase; padding: 1.25rem 1rem;
+            border-radius: 4px; width: 100%; text-align: center; transition: all 0.2s;
+            margin-bottom: 0.75rem; box-shadow: 0 4px 6px rgba(0,0,0,0.5); letter-spacing: 0.05em;
+        }
+        .btn-option:active { transform: translateY(2px); box-shadow: 0 1px 2px rgba(0,0,0,0.5); }
+        .btn-option:hover:not(.disabled) { border-color: #fbbf24; }
+        .btn-option.correct { background: linear-gradient(to right, #0ea5e9, #0284c7); border-color: #fbbf24; color: #fff; box-shadow: 0 0 15px rgba(14, 165, 233, 0.5); }
+        .btn-option.wrong { background: linear-gradient(to right, #991b1b, #7f1d1d); border-color: #dc2626; color: #fca5a5; box-shadow: 0 0 15px rgba(220, 38, 38, 0.5); }
+        .btn-option.disabled { pointer-events: none; opacity: 0.7; }
+
+        .fade-in { animation: fadeIn 0.3s ease-in forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+
+        .praise-toast {
+            position: absolute; top: 15%; left: 50%; transform: translate(-50%, 0);
+            background: #fbbf24; color: #000; border: 2px solid #fbbf24;
+            font-family: 'Cinzel', serif; font-weight: bold;
+            padding: 0.5rem 1rem; text-transform: uppercase; letter-spacing: 0.1em;
+            box-shadow: 0 0 20px rgba(251, 191, 36, 0.6); opacity: 0; pointer-events: none; z-index: 101; text-align: center; border-radius: 2px;
+        }
+        .toast-anim { animation: toastUp 1.5s ease-out forwards; }
+        @keyframes toastUp { 0% { transform: translate(-50%, 20px) scale(0.8); opacity: 0; } 20% { transform: translate(-50%, 0) scale(1.1); opacity: 1; } 80% { transform: translate(-50%, 0) scale(1); opacity: 1; } 100% { transform: translate(-50%, -20px) scale(0.8); opacity: 0; } }
+    </style>
+</head>
+<body>
+
+    <div id="mobile-container">
+        <header class="bg-black/90 backdrop-blur-md border-b border-gray-800 p-4 flex justify-between items-center z-10 shrink-0 shadow-lg">
+            <div class="flex items-center gap-3">
+                <span class="text-2xl drop-shadow-[0_0_5px_#0ea5e9]">✨</span>
+                <div class="flex flex-col">
+                    <span class="text-[9px] text-gray-400 font-epic tracking-widest uppercase font-bold">Mimir's Tales</span>
+                    <span class="text-white font-base text-xs font-bold tracking-widest uppercase drop-shadow-md">Wisdom Test</span>
+                </div>
+            </div>
+            <span class="text-ws-iceBlue font-epic font-bold text-[10px] border border-ws-iceBlue px-2 py-0.5 rounded bg-sky-900/20">B2</span>
+        </header>
+
+        <div id="start-screen" class="flex-1 flex flex-col items-center justify-center p-6 text-center z-10 bg-gradient-to-br from-[#020617] to-[#0a1a2a]">
+            <img src="https://upload.wikimedia.org/wikipedia/pt/a/a5/God_of_War_Ragnarök_capa.jpg" alt="GOW Cover" class="w-full max-w-[200px] object-cover drop-shadow-[0_0_15px_rgba(14,165,233,0.4)] mb-8 border border-ws-iceBlue rounded-sm">
+            <h1 class="text-3xl font-epic font-bold text-white uppercase tracking-widest mb-2 drop-shadow-[0_0_10px_rgba(251,191,36,0.3)]">Prophecies</h1>
+            <p class="text-gray-400 font-base text-sm mb-10">Pass the 15-question trial about Mixed Conditionals.</p>
+            <button onclick="startQuiz()" class="w-full bg-gradient-to-r from-ws-iceBlue to-sky-700 text-white font-epic font-bold text-lg py-4 uppercase tracking-widest transition-transform hover:scale-105 shadow-[0_0_20px_rgba(14,165,233,0.3)] rounded-sm border-none">Listen to Mimir</button>
+        </div>
+
+        <div id="quiz-screen" class="hidden flex-1 flex flex-col p-6 z-10 overflow-y-auto">
+            <div class="flex justify-between items-center mb-6 border-b border-gray-800 pb-2">
+                <span class="font-epic text-xs text-gray-500 uppercase tracking-widest font-bold">Tale <span id="q-num" class="text-ws-iceBlue">1</span>/15</span>
+                <span class="font-epic text-xs text-gray-500 uppercase tracking-widest font-bold">Wisdom: <span id="score-text" class="text-ws-gold">0</span></span>
+            </div>
+
+            <div id="question-container" class="flex-1 flex flex-col fade-in justify-center mb-8">
+                <p class="text-[10px] text-ws-gold uppercase tracking-widest mb-3 font-bold font-epic text-center border border-yellow-900/30 rounded py-1 bg-yellow-900/10">Synthesize</p>
+                <p id="q-text" class="text-2xl font-bold text-white mb-8 leading-relaxed font-base text-center"></p>
+                
+                <div id="options-container" class="flex flex-col gap-3"></div>
+            </div>
+
+            <button id="next-btn" onclick="nextQuestion()" class="hidden w-full mt-auto bg-black text-white border border-gray-600 font-epic font-bold text-base py-4 uppercase tracking-widest shadow-[0_0_15px_rgba(255,255,255,0.1)] hover:border-white transition-colors rounded">Next Tale ▸</button>
+        </div>
+
+        <div id="end-screen" class="hidden flex-1 flex flex-col items-center justify-center p-6 text-center z-10 bg-[url('https://www.transparenttextures.com/patterns/black-scales.png')] bg-black">
+            <span class="text-7xl mb-6 drop-shadow-[0_0_20px_rgba(251,191,36,0.6)]">👁️</span>
+            <h1 class="text-3xl font-epic font-bold text-white uppercase tracking-widest mb-2 text-ws-gold">Wisdom Gained</h1>
+            <p class="text-gray-400 font-base text-sm font-bold mb-6">Final Wisdom Score:</p>
+            <div class="text-5xl font-epic font-bold text-white mb-10 border border-ws-gold bg-yellow-900/20 p-6 shadow-[0_0_30px_rgba(251,191,36,0.3)] rounded">
+                <span id="final-score">0</span><span class="text-2xl text-gray-500">/15</span>
+            </div>
+            <button onclick="location.reload()" class="w-full bg-black border border-gray-700 text-gray-400 font-epic font-bold text-sm py-4 uppercase tracking-widest hover:border-white hover:text-white transition-colors rounded">End Story</button>
+        </div>
+
+        <div id="praise-toast" class="praise-toast">TRUE WISDOM</div>
+
+        <div class="h-1.5 w-full bg-gray-900 shrink-0 border-t border-gray-800">
+            <div id="progress-bar" class="h-full bg-gradient-to-r from-ws-iceBlue to-ws-gold w-0 transition-all duration-300 shadow-[0_0_10px_#0ea5e9]"></div>
+        </div>
+
+    </div>
+
+    <script>
+        const questions = [
+            { q: "If Kratos hadn't killed Baldur, they ________ at peace now.", options: ["would be", "would have been"], answer: 0 },
+            { q: "If we ________ more supplies, we wouldn't be freezing today.", options: ["had brought", "brought"], answer: 0 },
+            { q: "If you had listened to me, you ________ in danger right now.", options: ["wouldn't be", "weren't"], answer: 0 },
+            { q: "If Odin ________ lied, we would trust him today.", options: ["hadn't", "didn't"], answer: 0 },
+            { q: "If I hadn't lost my eye, I ________ a better warrior now.", options: ["would be", "was"], answer: 0 },
+            { q: "If you ________ harder yesterday, you wouldn't be tired today.", options: ["had trained", "trained"], answer: 0 },
+            { q: "What ________ you do now if you hadn't met us?", options: ["would", "will"], answer: 0 },
+            { q: "If Thor had killed him, we ________ having this conversation.", options: ["wouldn't be", "wouldn't have been"], answer: 0 },
+            { q: "If she hadn't left, she ________ here with us.", options: ["would be", "is"], answer: 0 },
+            { q: "If the prophecy had been true, the world ________ destroyed right now.", options: ["would be", "was"], answer: 0 },
+            { q: "If I ________ a god, I would not have done that in the past.", options: ["were", "am"], answer: 0 },
+            { q: "If we ________ the battle, we wouldn't be hiding today.", options: ["had won", "won"], answer: 0 },
+            { q: "If you had stayed home, you ________ safe right now.", options: ["would be", "would have been"], answer: 0 },
+            { q: "If he ________ faster, he wouldn't be injured today.", options: ["had run", "ran"], answer: 0 },
+            { q: "We wouldn't be enemies if you ________ my family.", options: ["hadn't attacked", "didn't attack"], answer: 0 }
+        ];
+
+        let currentQ = 0; let score = 0;
+        const praises = ["TRUE WISDOM", "VISION CLEAR", "MIMIR APPROVES", "GODLIKE"];
+
+        function startQuiz() {
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('hidden', 'flex');
+            document.getElementById('quiz-screen').classList.add('flex');
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            const qData = questions[currentQ];
+            document.getElementById('q-num').innerText = currentQ + 1;
+            document.getElementById('q-text').innerHTML = `"${qData.q}"`;
+            
+            const container = document.getElementById('options-container');
+            container.innerHTML = '';
+            
+            qData.options.forEach((opt, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'btn-option';
+                btn.innerHTML = `<span class="text-ws-gold mr-2">></span> ${opt}`;
+                btn.onclick = () => checkAnswer(btn, index);
+                container.appendChild(btn);
+            });
+
+            document.getElementById('next-btn').classList.add('hidden');
+            const qc = document.getElementById('question-container');
+            qc.classList.remove('fade-in'); void qc.offsetWidth; qc.classList.add('fade-in');
+            updateProgress();
+        }
+
+        function checkAnswer(btn, selectedIndex) {
+            const qData = questions[currentQ];
+            document.querySelectorAll('.btn-option').forEach(b => b.classList.add('disabled'));
+
+            if (selectedIndex === qData.answer) {
+                btn.classList.add('correct'); score++;
+                document.getElementById('score-text').innerText = score;
+                showPraise();
+            } else {
+                btn.classList.add('wrong');
+                document.querySelectorAll('.btn-option')[qData.answer].classList.add('correct'); 
+            }
+
+            const blankedText = qData.q.replace('________', `<span class="${selectedIndex === qData.answer ? 'text-ws-iceBlue' : 'text-ws-bloodRed'} underline underline-offset-4">${qData.options[qData.answer]}</span>`);
+            document.getElementById('q-text').innerHTML = `"${blankedText}"`;
+            document.getElementById('next-btn').classList.remove('hidden');
+        }
+
+        function nextQuestion() {
+            currentQ++;
+            if (currentQ < questions.length) loadQuestion();
+            else endQuiz();
+        }
+
+        function endQuiz() {
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('flex');
+            document.getElementById('end-screen').classList.remove('hidden');
+            document.getElementById('end-screen').classList.add('flex');
+            
+            const finalScoreEl = document.getElementById('final-score');
+            finalScoreEl.innerText = score;
+            if(score < 8) finalScoreEl.classList.add('text-ws-bloodRed');
+
+            document.getElementById('progress-bar').style.width = '100%';
+        }
+
+        function updateProgress() { document.getElementById('progress-bar').style.width = `${(currentQ / questions.length) * 100}%`; }
+        function showPraise() {
+            const toast = document.getElementById('praise-toast');
+            toast.innerText = praises[Math.floor(Math.random() * praises.length)];
+            toast.classList.remove('toast-anim'); void toast.offsetWidth; toast.classList.add('toast-anim');
+        }
+    </script>
+</body>
+</html>
